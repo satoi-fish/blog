@@ -49,6 +49,7 @@ import { getBlogList } from "network/home";
 import { getBlogDetail, getBlogComment } from "network/detail";
 import { delBlog } from "network/delBlog";
 import { updateBlog } from "network/udBlog";
+import { newBlog } from "network/newBlog";
 
 export default {
   name: "Backstage",
@@ -122,7 +123,7 @@ export default {
       }
     },
     saveUpdate(s1, s2) {
-      console.log(s1, ",", s2);
+      // console.log(s1, ",", s2);
       this.tempData.title = s1.slice(0, s1.indexOf(","));
       this.tempData.contentText = s1;
       this.tempData.contentHtml = s2;
@@ -132,8 +133,21 @@ export default {
         }
       })
     },
-    saveNew(){
-
+    saveNew(s1,s2){
+      // console.log(2);
+      // console.log(s1.slice((s1.indexOf("\n")) + 1));
+      console.log(s1,'\n',s2);
+      this.tempData.title = s1.slice(0, s1.indexOf("\n"));
+      this.tempData.contentText = s1.slice((s1.indexOf("\n")) + 1);
+      this.tempData.contentHtml ='<p>' + s2.slice((s2.indexOf("<br />")) + 6);
+      console.log(this.tempData);
+      newBlog(this.tempData).then(data=>{
+        // console.log(data);
+        if(!data.error){
+          this.$store.dispatch('changeTips',`新建博客成功，编号为${data.data.insertId}.`)
+          this.content = ''
+        }
+      })
     }
   },
   created() {
