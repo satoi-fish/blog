@@ -12,9 +12,9 @@
         >
       </div>
     </div>
-    <section class="main">
-      <article v-html="detailData.content"></article>
-      <CommentSize />
+    <section class="main" @click="btnClick($event)" >
+      <article v-html="detailData.contentHtml"></article>
+      <CommentSize :commentData="commentData" />
     </section>
   </div>
 </template>
@@ -22,7 +22,7 @@
 <script>
 import Banner from "components/content/Banner";
 import CommentSize from "./childCom/CommentSize";
-import { getBlogDetail } from "network/detail";
+import { getBlogDetail,getBlogComment } from "network/detail";
 import { formatDate } from "utils";
 
 export default {
@@ -30,6 +30,7 @@ export default {
   data() {
     return {
       detailData: [],
+      commentData: [],
       test: "<div>nihao</div>",
     };
   },
@@ -37,7 +38,21 @@ export default {
     Banner,
     CommentSize,
   },
+  methods:{
+    btnClick(event){
+      if(event.target.localName === 'button'){
+        console.log(123);
+        this.$forceUpdate()
+      }
+        console.log(event.target.localName);
+    }
+  },
   created() {
+    getBlogComment(this.$route.params.id).then(data=>{
+      console.log(data);
+      this.commentData = data.data
+      
+    })
     getBlogDetail(this.$route.params.id)
       .then((result) => {
         // console.log(result);
@@ -103,6 +118,7 @@ export default {
   color: rgb(119, 115, 115);
 }
 .main article {
+  margin-top: 50px;
   margin-bottom: 50px;
 }
 </style>

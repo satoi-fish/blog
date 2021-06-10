@@ -9,7 +9,7 @@
         <span>用户名{{loginData.username}}</span>
         <input type="text" v-model.lazy="loginData.username" placeholder="用户名或者邮箱">
         <span>密码{{loginData.password}}</span>
-        <input type="password" v-model.lazy="loginData.password" placeholder="密码">
+        <input type="password" @keydown.enter="onLogin" v-model.lazy="loginData.password" placeholder="密码">
         <button class="btn" type="button"
         onmouseover="this.style.backgroundColor='rgba(49, 49, 49,0.11)';" 
         onmouseout="this.style.backgroundColor='rgb(39, 39, 39)';"
@@ -31,13 +31,22 @@ export default {
         username:'',
         password:'',
       },
+      tips:'',
     };
   },
   methods:{
     onLogin(){
+      // console.log(this.loginData);
       login(this.loginData).then(result =>{
-        let a = alert(result.msg)
-        console.log(a);
+        console.log(result);
+        if(result !== {}){
+          result.data.isLogin = true
+          this.$store.dispatch('isChangLogin',result.data)
+          this.$store.dispatch('changeTips','登录成功')
+          this.$router.push('/home').catch(err=>err)
+        }else{
+          this.$store.dispatch('changeTips','账号或密码错误') 
+        }
       })
     }
   }
@@ -51,6 +60,9 @@ export default {
   display: flex;
   flex-direction: column; 
   align-items: center;
+}
+.login input {
+  color: #000;
 }
 .title,.wrap{ 
   position: absolute;

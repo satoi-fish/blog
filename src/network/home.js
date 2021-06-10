@@ -5,3 +5,9 @@ export function getBlogList(){
     url:'/blog/list'
   })
 }
+
+export function getIsLogin(){
+  return request({
+    url:'/user/login-check'
+  })
+}

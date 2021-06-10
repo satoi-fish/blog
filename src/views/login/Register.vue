@@ -2,18 +2,24 @@
 <template>
   <div class="register">
     <div class="title">
-      注册页面{{username}}
+      注册页面{{registerData.username}}
     </div>
     <div class="wrap">
       <form action="" class="formWrap">
         <span>用户名</span>
-        <input type="text" v-model.lazy.trim="username" placeholder="用户名或者邮箱">
+        <input type="text" v-model.lazy.trim="registerData.username" placeholder="用户名或者邮箱">
         <span>密码</span>
-        <input type="password" v-model.lazy="password1" placeholder="密码">
+        <input type="password" @keydown="checkLength" v-model="password1" placeholder="密码">
         <span>确认密码</span>
-        <input type="password" v-model="password2" placeholder="再输入一次密码">
-        <button class="btn" onmouseover="this.style.backgroundColor='rgba(49, 49, 49,0.11)';" 
-        onmouseout="this.style.backgroundColor='rgb(39, 39, 39)';">注册</button>
+        <input @keydown.enter="onLogin" type="password" @keydown="checkLength" v-model="password2" placeholder="再输入一次密码">
+        <span>{{tips}}</span>
+        <button class="btn" 
+        @mouseover="mousein"
+        @mouseout="mouseout"
+        @click="postRegister"
+        type="button"
+        ref="btn"
+        >注册</button>
       </form>
     </div>
   </div>
@@ -21,57 +27,123 @@
 </template>
 
 <script>
+import { postRegisterData }  from "network/register";
+
 export default {
   name: "register",
   data() {
     return {
-      username:'',
-      password1:'',
-      password2:''
+      registerData: {
+        username: "",
+        password: "",
+      },
+      password1: "",
+      password2: "",
+      tips: "",
     };
   },
+  computed:{
+    isLongEnough(){
+      return this.password1.length >= 6 
+    },
+    isOk(){
+      return this.isLongEnough && this.tips === ""
+    }
+  },
+  methods: {
+    postRegister() {
+      if(this.isOk){
+        console.log('ok');
+        this.registerData.password = this.password1;
+        postRegisterData(this.registerData).then((data) => {
+          console.log(data);
+          if (data.error !== -1) {
+            // 跳转并显示已登录
+            data.data.isLogin = true
+            this.$store.dispatch('isChangLogin',data.data)
+            this.$store.dispatch('changTips','注册成功')
+            this.$router.push('/home').catch(err=>err)
+          }
+        });
+      }
+    },
+    checkLength() {
+      if (!this.isLongEnough) {
+        this.tips = "长度要大于6哦";
+        this.$refs.btn.style.cssText = "background-color:red;";
+      }else if(this.isLongEnough){
+        this.tips = "";
+        this.$refs.btn.style.cssText = "background-color:rgb(39, 39, 39);";
+      }
+      else if (this.password1 !== this.password2) {
+        this.tips = "输入的两次密码不一样哦~"
+      }else if(this.password1 === this.password2){
+        this.tips = ""
+      }
+    },
+    mousein() {
+      console.log(this.tips);
+      if (this.tips !== "") {
+        this.$refs.btn.style.cssText = "background-color:red;";
+      } else {
+        this.$refs.btn.style.cssText = "background-color:rgb(39, 39, 39);";
+      }
+    },
+    mouseout() {
+      if (this.tips !== "") {
+        this.$refs.btn.style.cssText = "background-color:red;";
+      } else {
+        this.$refs.btn.style.cssText = "background-color:rgb(39, 39, 39);";
+      }
+    },
+  },
+  created(){
+    console.log(this.isLongEnough);
+  }
 };
 </script>
 <style scoped>
-.register{
+.register {
   position: relative;
   top: 58px;
   color: #fff;
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
   align-items: center;
 }
-.title,.wrap{ 
+.title,
+.wrap {
   position: absolute;
 }
-.title{
+.title {
   top: 50px;
   font-size: 30px;
 }
-.wrap{
+.wrap {
   top: 100px;
   font-size: 20px;
 }
-.formWrap{
+.formWrap {
   display: flex;
   flex-direction: column;
 }
-.formWrap span,input{
+.formWrap span,
+input {
   margin-top: 20px;
 }
-::-webkit-input-placeholder{
+::-webkit-input-placeholder {
   color: rgb(163, 161, 161);
 }
-:-moz-placeholder{
+:-moz-placeholder {
   color: rgb(163, 161, 161);
 }
-::-moz-placeholder{
+::-moz-placeholder {
   color: rgb(163, 161, 161);
 }
-:-ms-input-placeholder{
+:-ms-input-placeholder {
   color: rgb(163, 161, 161);
 }
-.btn{
+.btn {
   font-size: 18px;
   color: #fff;
   margin-top: 40px;
@@ -84,7 +156,7 @@ export default {
   border-radius: 12px;
   align-self: center;
 }
-.btn:active{
+.btn:active {
   border-right-color: #000;
   border-bottom-color: #000;
 }

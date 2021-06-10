@@ -4,6 +4,7 @@ const Home = () => import('../views/home/Home')
 const Login = () => import('../views/login/Login')
 const Register = () => import('../views/login/Register')
 const Detail = () => import('../views/detail/Detail')
+const backstage = () => import('../views/backstage/Backstage')
 
 Vue.use(VueRouter)
 
@@ -27,6 +28,10 @@ const routes = [
   {
     path: '/detail/:id',
     component: Detail
+  },
+  {
+    path: '/backstage',
+    component: backstage
   },
   
 ]

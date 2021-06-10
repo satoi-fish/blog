@@ -4,7 +4,7 @@ export function debounce(fn, time = 500){
     const that = this
     if (timer) {clearTimeout(timer)}
     timer = setTimeout(() => {
-      fn.apply(this, args)
+      fn.apply(that, args)
     }, time);
   }
 }
@@ -41,6 +41,9 @@ export function waterFallLayout(that){
     arr[j] += parseInt(item[i].clientHeight) + 30;
 
   }
+  // console.log(arr[3])
+  // console.log(bloglist);
+  bloglist[0].style.height = arr[3] + 20 + 'px'
 
   if (pageWidth > 700 && that.flag) {
     item[columns - 1].style.top = 0 + "px";

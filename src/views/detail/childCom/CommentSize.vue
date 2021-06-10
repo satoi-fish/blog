@@ -1,58 +1,67 @@
 <template>
   <div class="commentSize">
     <div class="comment">
-      <h2>评论 <i>comment</i></h2>
-      <textarea
+      <h2>评论 {{postCommentData.content}}<i>comment</i></h2>
+      <textarea v-model.lazy.trim="postCommentData.content"
         name="commentArea"
         placeholder="请输入你想说的评论,右下方边缘可拉动伸展"
       ></textarea>
+      <button @click="commentPostClick">确定</button>
     </div>
-    <div class="commentSizeContent">
+    <div class="commentSizeContent" v-for="item in commentData.slice().reverse()" >
       <div class="cImage">
-        <img src="@/assets/img/lisa2.jpg" alt="" />
-        <span class="member">zhangsan</span>
+        <img src="@/assets/img/lisa.jpg" alt="" />
+        <span class="user">{{ item.username }}</span>
+        <span class="time">{{ getTime(item) }}</span>
       </div>
       <div class="triangle"></div>
       <span class="ctext">
-        卡上的房价SDK浪费粉丝都快来收到了科技师范sad撒旦法按时收到发斯蒂芬是否的阿萨德
-        阿萨德发生的是的发生收到发斯蒂芬阿斯蒂芬阿斯蒂芬阿斯蒂芬阿萨德发斯蒂芬sad是否
-        卡上的房价SDK浪费粉丝都快来收到了科技师范sad撒旦法按时收到发斯蒂芬是否的阿萨德
-        阿萨德发生的是的发生收到发斯蒂芬阿斯蒂芬阿斯蒂芬阿斯蒂芬阿萨德发斯蒂芬sad是否
-        卡上的房价SDK浪费粉丝都快来收到了科技师范sad撒旦法按时收到发斯蒂芬是否的阿萨德
-        阿萨德发生的是的发生收到发斯蒂芬阿斯蒂芬阿斯蒂芬阿斯蒂芬阿萨德发斯蒂芬sad是否
-        卡上的房价SDK浪费粉丝都快来收到了科技师范sad撒旦法按时收到发斯蒂芬是否的阿萨德
-        阿萨德发生的是的发生收到发斯蒂芬阿斯蒂芬阿斯蒂芬阿斯蒂芬阿萨德发斯蒂芬sad是否
-        卡上的房价SDK浪费粉丝都快来收到了科技师范sad撒旦法按时收到发斯蒂芬是否的阿萨德
-        阿萨德发生的是的发生收到发斯蒂芬阿斯蒂芬阿斯蒂芬阿斯蒂芬阿萨德发斯蒂芬sad是否
-        卡上的房价SDK浪费粉丝都快来收到了科技师范sad撒旦法按时收到发斯蒂芬是否的阿萨德
-        阿萨德发生的是的发生收到发斯蒂芬阿斯蒂芬阿斯蒂芬阿斯蒂芬阿萨德发斯蒂芬sad是否
-        卡上的房价SDK浪费粉丝都快来收到了科技师范sad撒旦法按时收到发斯蒂芬是否的阿萨德
-        阿萨德发生的是的发生收到发斯蒂芬阿斯蒂芬阿斯蒂芬阿斯蒂芬阿萨德发斯蒂芬sad是否
-        卡上的房价SDK浪费粉丝都快来收到了科技师范sad撒旦法按时收到发斯蒂芬是否的阿萨德
-        阿萨德发生的是的发生收到发斯蒂芬阿斯蒂芬阿斯蒂芬阿斯蒂芬阿萨德发斯蒂芬sad是否
-        卡上的房价SDK浪费粉丝都快来收到了科技师范sad撒旦法按时收到发斯蒂芬是否的阿萨德
-        阿萨德发生的是的发生收到发斯蒂芬阿斯蒂芬阿斯蒂芬阿斯蒂芬阿萨德发斯蒂芬sad是否
-        卡上的房价SDK浪费粉丝都快来收到了科技师范sad撒旦法按时收到发斯蒂芬是否的阿萨德
-        阿萨德发生的是的发生收到发斯蒂芬阿斯蒂芬阿斯蒂芬阿斯蒂芬阿萨德发斯蒂芬sad是否
-        卡上的房价SDK浪费粉丝都快来收到了科技师范sad撒旦法按时收到发斯蒂芬是否的阿萨德
-        阿萨德发生的是的发生收到发斯蒂芬阿斯蒂芬阿斯蒂芬阿斯蒂芬阿萨德发斯蒂芬sad是否
-        卡上的房价SDK浪费粉丝都快来收到了科技师范sad撒旦法按时收到发斯蒂芬是否的阿萨德
-        阿萨德发生的是的发生收到发斯蒂芬阿斯蒂芬阿斯蒂芬阿斯蒂芬阿萨德发斯蒂芬sad是否
-        卡上的房价SDK浪费粉丝都快来收到了科技师范sad撒旦法按时收到发斯蒂芬是否的阿萨德
-        阿萨德发生的是的发生收到发斯蒂芬阿斯蒂芬阿斯蒂芬阿斯蒂芬阿萨德发斯蒂芬sad是否
-        卡上的房价SDK浪费粉丝都快来收到了科技师范sad撒旦法按时收到发斯蒂芬是否的阿萨德
-        阿萨德发生的是的发生收到发斯蒂芬阿斯蒂芬阿斯蒂芬阿斯蒂芬阿萨德发斯蒂芬sad是否
-        卡上的房价SDK浪费粉丝都快来收到了科技师范sad撒旦法按时收到发斯蒂芬是否的阿萨德
-        阿萨德发生的是的发生收到发斯蒂芬阿斯蒂芬阿斯蒂芬阿斯蒂芬阿萨德发斯蒂芬sad是否
-        阿萨德富士达阿斯蒂芬按时
+        {{ item.commentdata }}
       </span>
     </div>
   </div>
 </template>
 
 <script>
+import { formatDate } from "utils";
+import { postBlogComment } from 'network/detail'
+
 export default {
   name: "commentSize",
+  data(){
+    return{
+      postCommentData:{
+        content:''
+      },
+      isComment:0,
+    }
+  },
+  props: {
+    commentData: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
+  },
+  methods:{
+    getTime(item){
+      return formatDate(new Date(item.createtime),"yyyy-MM-dd, hh:mm");
+    },
+    commentPostClick(){
+      // console.log(this.postCommentData);
+      postBlogComment(this.$route.params.id,this.postCommentData).then(data=>{
+        // this.isComment = Number(data)
+        // console.log(data);
+        if(data){
+          this.$set(this.commentData,this.commentData.length,data.data[this.commentData.length])
+          // console.log(data);
+        }
+      })
+    },
+  },
+  created(){
+  }
 };
 </script>
 
@@ -91,7 +100,16 @@ export default {
   min-width: 120px;
   height: 120px;
   flex: 2;
+  display: flex;
+  flex-direction: column;
   /* margin:10px 10px 10px; */
+}
+.user {
+  font-size: 20px;
+  color: rgb(22, 172, 218);
+} 
+.time{
+  font-size: 15px;
 }
 .triangle {
   position: relative;
