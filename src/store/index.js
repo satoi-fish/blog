@@ -8,10 +8,12 @@ import getters from './getters';
 Vue.use(Vuex)
 
 const state = {
-  isLogin:false,
+  showLogin:false,
   username:'',
   tips:'',
-  isTips:false,
+  showTips:false,
+  showSelect:false,
+  showBtn:false,
   pages:1,
 }
 

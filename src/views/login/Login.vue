@@ -40,7 +40,7 @@ export default {
       login(this.loginData).then(result =>{
         console.log(result);
         if(result !== {}){
-          result.data.isLogin = true
+          result.data.showLogin = true
           this.$store.dispatch('isChangLogin',result.data)
           this.$store.dispatch('changeTips','登录成功')
           this.$router.push('/home').catch(err=>err)

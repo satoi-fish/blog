@@ -1,6 +1,6 @@
 export default{
-  isLogin (state) {
-    return state.isLogin
+  showLogin (state) {
+    return state.showLogin
   },
   getusername (state) {
     return state.username

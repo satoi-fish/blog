@@ -12,11 +12,11 @@
         <a href="javascript:;">归档</a>
         <a href="javascript:;">关于我</a>
       </div>
-      <div class="tRight" v-if="this.$store.getters.isLogin">
+      <div class="tRight" v-if="this.$store.getters.showLogin">
         <a href="javascript:;" class="user">{{this.$store.getters.getusername}}</a>
         <a href="javascript:;" class="info">个人信息</a>
       </div>
-      <div class="tRight" v-else="this.$store.getters.isLogin">
+      <div class="tRight" v-else="this.$store.getters.showLogin">
         <a href="javascript:;" class="login">登录</a>
         <a href="javascript:;" class="registration" >注册</a>
       </div>
@@ -53,7 +53,7 @@ export default {
     getIsLogin().then(data =>{
       // console.log(data);
       if(data.error !== -1){
-        data.isLogin = true
+        data.showLogin = true
         this.$store.dispatch('isChangLogin',data).then(result=>{
           console.log('vuex',result);
         })

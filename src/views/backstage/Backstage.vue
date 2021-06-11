@@ -5,10 +5,24 @@
     <div class="wrapper" @click="listClick">
       <Midbox class="new" title="新建">
         <article class="newblog" v-show="showNew">
+          <Upload
+            class="upload"
+            name="files"
+            :multiple="true"
+            action="/api/upload"
+            @change="handleChange"
+          >
+            <div class="insideUpload">
+              <Icon type="inbox" />
+              <span>拖动图片到此处</span>
+            </div>
+          </Upload>
           <mavonEditor
             class="mavon-editor"
             v-model="content"
-            @save="saveNew"/>
+            @save="saveNew"
+            @imgAdd="addImg"
+          />
         </article>
       </Midbox>
       <Midbox class="update" title="更新">
@@ -46,10 +60,11 @@ import { mavonEditor } from "mavon-editor";
 import "mavon-editor/dist/css/index.css";
 import Midbox from "./childCom/Midbox.vue";
 import { getBlogList } from "network/home";
-import { getBlogDetail, getBlogComment } from "network/detail";
+import { getBlogDetail } from "network/detail";
 import { delBlog } from "network/delBlog";
 import { updateBlog } from "network/udBlog";
 import { newBlog } from "network/newBlog";
+import { Upload, Button, Icon } from "ant-design-vue";
 
 export default {
   name: "Backstage",
@@ -62,8 +77,7 @@ export default {
       udShow: false,
       delShow: false,
       showDetail: false,
-      showNew:false,
-      showDel: false,
+      showNew: false,
       tempId: -1,
       tempData: {},
     };
@@ -72,6 +86,9 @@ export default {
     mavonEditor,
     Midbox,
     Banner,
+    Upload,
+    Button,
+    Icon,
   },
   methods: {
     listClick(e) {
@@ -80,7 +97,7 @@ export default {
         this.delShow = false;
         this.showDetail = false;
         this.showNew = true;
-        this.content = ''
+        this.content = "";
         return;
       }
       if (e.target.innerText === "更新") {
@@ -88,7 +105,7 @@ export default {
         this.delShow = false;
         this.showDetail = false;
         this.showNew = false;
-        this.content = ''
+        this.content = "";
         return;
       }
       if (e.target.innerText === "删除") {
@@ -96,7 +113,7 @@ export default {
         this.delShow = true;
         this.showDetail = false;
         this.showNew = false;
-        this.content = ''
+        this.content = "";
         return;
       }
     },
@@ -112,43 +129,91 @@ export default {
         });
       }
     },
-    delClick(e) {
+    async delClick(e) {
+      this.$bus.$off('selected')
       this.tempId = Number(e.toElement.parentNode.firstChild.innerText);
-      if(this.tempId !== NaN && this.delShow === true){
-        console.log(text);
-        delBlog(text).then(data=>{
-          console.log(data);
-          this.showDel= true
-        })
+      if (this.tempId !== NaN && this.delShow === true) {
+        // console.log(this.tempId);
+        this.$store
+        .dispatch('changeShowSelect',`确定删除标题id为${this.tempId}的博客吗？`)
+        await this.$bus.$on('selected',(d)=>{
+          // console.log(d);
+          if(d){
+            // this.$store.dispatch("changeTips", "删除成功");
+            delBlog(this.tempId).then((result) => {
+              // console.log(result);
+              if(!result.error){
+                this.$store.dispatch("changeTips", "删除成功");
+              }else{
+                this.$store.dispatch("changeTips", "删除失败");
+              }
+            });
+          }
+        })   
       }
     },
-    saveUpdate(s1, s2) {
+    async saveUpdate(s1, s2) {
+      this.$bus.$off('selected')
       // console.log(s1, ",", s2);
       this.tempData.title = s1.slice(0, s1.indexOf(","));
       this.tempData.contentText = s1;
       this.tempData.contentHtml = s2;
-      updateBlog(this.tempId, this.tempData).then(data=>{
-        if(data.data){
-          this.$store.dispatch('changeTips','更新成功')
+      this.$store
+        .dispatch('changeShowSelect',`确定更新标题id为${this.tempId}的博客吗？`)
+      await this.$bus.$on('selected',(d)=>{
+        if(d){
+          updateBlog(this.tempId, this.tempData).then((data) => {
+            if (data.error !== -1) {
+              this.$store.dispatch("changeTips", "更新成功");
+            }else{
+              this.$store.dispatch("changeTips", "更新失败");
+            }
+          });
         }
-      })
+        this.$bus.$off('changeShowSelect')
+      })   
     },
-    saveNew(s1,s2){
+    async saveNew(s1, s2) {
+      this.$bus.$off('selected')
       // console.log(2);
       // console.log(s1.slice((s1.indexOf("\n")) + 1));
-      console.log(s1,'\n',s2);
+      // console.log(s1,'\n',s2);
       this.tempData.title = s1.slice(0, s1.indexOf("\n"));
-      this.tempData.contentText = s1.slice((s1.indexOf("\n")) + 1);
-      this.tempData.contentHtml ='<p>' + s2.slice((s2.indexOf("<br />")) + 6);
-      console.log(this.tempData);
-      newBlog(this.tempData).then(data=>{
-        // console.log(data);
-        if(!data.error){
-          this.$store.dispatch('changeTips',`新建博客成功，编号为${data.data.insertId}.`)
-          this.content = ''
+      this.tempData.contentText = s1.slice(s1.indexOf("\n") + 1);
+      this.tempData.contentHtml = "<p>" + s2.slice(s2.indexOf("<br />") + 6);
+      // console.log(this.tempData);
+      this.$store
+        .dispatch('changeShowSelect',`确定新建标题为${this.tempData.title}的博客吗？`)
+      await this.$bus.$on('selected',(d)=>{
+        // console.log(d);
+        if(d){
+          newBlog(this.tempData).then((data) => {
+            // console.log(data);
+            if (!data.error) {
+              this.$store.dispatch(
+                "changeTips",
+                `新建博客成功，编号为${data.data.insertId}.`
+              );
+              this.content = "";
+            }
+          });
         }
-      })
-    }
+      })   
+    },
+    addImg(filename, fileobj) {
+      console.log(filename, ",", fileobj);
+    },
+    handleChange(info) {
+      const status = info.file.status;
+      if (info.file.status !== "uploading") {
+        console.log(info.file, info.fileList);
+      }
+      if (info.file.status === "done") {
+        this.$message.success(`${info.file.name} file uploaded successfully`);
+      } else if (info.file.status === "error") {
+        this.$message.error(`${info.file.name} file upload failed.`);
+      }
+    },
   },
   created() {
     // console.log(this.tempId);
@@ -158,6 +223,9 @@ export default {
     });
   },
   mounted() {},
+  beforeDestroy(){
+    this.$bus.$off('changeShowSelect')
+  }
 };
 </script>
 
@@ -215,7 +283,38 @@ export default {
   /* width: 100vh; */
   left: 0;
   height: 80vh;
-  margin-top: 58px;
+  margin-top: 308px;
   right: 0;
 }
+.upload {
+  display: flex;
+  flex-direction: column;
+  font-size: 50px;
+  position: absolute;
+  height: 200px;
+  /* width: 300px; */
+  /* margin: 0 120px; */
+  left: 0;
+  /* padding: 0 20%; */
+  right: 0;
+  margin-top: 55px;
+  z-index: 10;
+  background-color: #fff;
+}
+.insideUpload {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 30px;
+  padding-top: 50px;
+  text-align: center;
+}
+/* .new{
+  animation:goheight 5s;
+}
+@keyframes goheight {
+  from{
+    height: 0px;
+  }
+} */
 </style>
