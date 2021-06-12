@@ -5,7 +5,7 @@
       class="item"
       v-for="(item, index) in listData.slice(0,this.page * 8)"
       @click="imgClick(item)">
-      <img :src="getImage(item)" alt="" @load="imgLoad"/>
+      <img :src="item.image" alt="" @load="imgLoad"/>
       <h1 class="title">{{ item.title }}</h1>
       <span>{{ getContent(item) }}</span>
     </div>
@@ -38,9 +38,6 @@ export default {
     }
   },
   methods: {
-    getImage(item){
-      return `http://localhost/${item.image}`
-    },
     getContent(item) {
       return item.contentHtml.replace(/<[^>]+>|&[^>]+;/g, "").trim()
       //.split(' ',20)[0]+'...'; //去掉所有的html标签和&nbsp;之类的特殊符合

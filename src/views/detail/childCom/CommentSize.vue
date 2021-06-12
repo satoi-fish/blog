@@ -1,12 +1,13 @@
 <template>
   <div class="commentSize">
     <div class="comment">
-      <h2>评论 {{postCommentData.content}}<i>comment</i></h2>
+      <h2>评论<i>comment</i></h2>
       <textarea v-model.lazy.trim="postCommentData.content"
         name="commentArea"
+        @keydown.enter="commentPostClick"
         placeholder="请输入你想说的评论,右下方边缘可拉动伸展"
       ></textarea>
-      <button @click="commentPostClick">确定</button>
+      <button class="btn" @click="commentPostClick">确定</button>
     </div>
     <div class="commentSizeContent" v-for="item in commentData.slice().reverse()" >
       <div class="cImage">
@@ -78,6 +79,9 @@ export default {
   padding: 25px 0;
   border-top: 7px solid black;
 }
+.comment > h2,.comment > i{
+  color: #fff;
+}
 .comment textarea {
   margin: 0;
   display: block;
@@ -136,5 +140,16 @@ export default {
   flex: 8;
   display: block;
   background-color: rgb(207, 205, 205);
+}
+.btn{
+  height: 35px;
+  width: 130px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.btn:hover{
+  background-color: #333;
+  color: #fff;
+  transition:all .5s;
 }
 </style>

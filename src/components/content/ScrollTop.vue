@@ -15,7 +15,7 @@ export default {
   color: #000;
   width: 100px;
   height: 100px;
-  background-color: rgba(255, 255, 255, .5);
+  background-color: rgba(255, 255, 255, .7);
   border-radius:100px;
   cursor:pointer;
 
@@ -25,7 +25,7 @@ export default {
   z-index: 99999999999999;
 }
 .scrolltop:hover{
-  background-color: rgba(255, 255, 255, 0.75);
+  background-color: rgba(255, 255, 255, 1);
 }
 .up{
   display: inline-block;

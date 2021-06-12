@@ -98,7 +98,7 @@ export default {
   color: rgb(197, 197, 197);
   flex: 1;
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
   flex-shrink: 0;
 }
 .tRight a{

@@ -2,7 +2,7 @@
 <template>
   <div class="detail">
     <div class="wrap">
-      <Banner />
+      <Banner :imageData="detailData.image"/>
       <div class="topInf">
         <h1 class="title">{{ detailData.title }}</h1>
         <span class="information"
@@ -13,7 +13,7 @@
       </div>
     </div>
     <section class="main" @click="btnClick($event)" >
-      <article v-html="detailData.contentHtml"></article>
+      <article class="content" v-html="detailData.contentHtml"></article>
       <CommentSize :commentData="commentData" />
     </section>
   </div>
@@ -31,7 +31,6 @@ export default {
     return {
       detailData: [],
       commentData: [],
-      test: "<div>nihao</div>",
     };
   },
   components: {
@@ -41,15 +40,15 @@ export default {
   methods:{
     btnClick(event){
       if(event.target.localName === 'button'){
-        console.log(123);
+        // console.log(123);
         this.$forceUpdate()
       }
-        console.log(event.target.localName);
+        // console.log(event.target.localName);
     }
   },
   created() {
     getBlogComment(this.$route.params.id).then(data=>{
-      console.log(data);
+      // console.log(data);
       this.commentData = data.data
       
     })
@@ -72,6 +71,17 @@ export default {
 .detail {
   position: relative;
 }
+.content{
+  background-color: #fff;
+  border-radius:10px;
+  padding-top:30px;
+  padding-bottom:30px;
+  width: 860px;
+}
+img{
+  width: 100%;
+}
+
 .wrap {
   padding-top: 58px;
 }
@@ -105,6 +115,7 @@ export default {
 .title {
   font-size: 4.5rem;
   margin: 0;
+  color: #fff;
 }
 .information {
   font-size: 15px;
@@ -114,7 +125,7 @@ export default {
   width: 860px;
   margin: 0 auto;
   /* margin-top:30px; */
-  padding: 50px 10%;
+  padding-top:50px;
   color: rgb(119, 115, 115);
 }
 .main article {
