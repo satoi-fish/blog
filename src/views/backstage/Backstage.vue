@@ -64,7 +64,7 @@ import { getBlogDetail } from "network/detail";
 import { delBlog } from "network/delBlog";
 import { updateBlog } from "network/udBlog";
 import { newBlog } from "network/newBlog";
-import { Upload, Button, Icon } from "ant-design-vue";
+import { Upload, Icon } from "ant-design-vue";
 
 export default {
   name: "Backstage",
@@ -87,7 +87,6 @@ export default {
     Midbox,
     Banner,
     Upload,
-    Button,
     Icon,
   },
   methods: {

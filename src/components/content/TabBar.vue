@@ -15,6 +15,7 @@
       <div class="tRight" v-if="this.$store.getters.showLogin">
         <a href="javascript:;" class="user">{{this.$store.getters.getusername}}</a>
         <a href="javascript:;" class="info">个人信息</a>
+        <a href="javascript:;" v-show="getBackstage" class="backstage">后台</a>
       </div>
       <div class="tRight" v-else="this.$store.getters.showLogin">
         <a href="javascript:;" class="login">登录</a>
@@ -33,6 +34,11 @@ export default {
     return {
     };
   },
+  computed:{
+    getBackstage(){
+      return this.$store.state.username === 'Satoi'
+    }
+  },
   methods: {
     tabClick(e){
       if(e.target.className === 'blogName' || e.target.className === 'homepage'){
@@ -45,6 +51,10 @@ export default {
         this.$router.push('/register').catch(err => err)
       }
       if(e.target.className === 'info'){
+        // console.log(data);
+        this.$router.push('/info').catch(err=>{err})
+      }
+      if(e.target.className === 'backstage'){
         this.$router.push('/backstage').catch(err => err)
       }
     },
