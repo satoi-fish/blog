@@ -2,18 +2,31 @@
   <div class="commentSize">
     <div class="comment">
       <h2>评论<i>comment</i></h2>
-      <textarea v-model.lazy.trim="postCommentData.content"
+      <textarea
+        v-model.lazy.trim="postCommentData.content"
         name="commentArea"
         @keydown.enter="commentPostClick"
         placeholder="请输入你想说的评论,右下方边缘可拉动伸展"
       ></textarea>
       <button class="btn" @click="commentPostClick">确定</button>
     </div>
-    <div class="commentSizeContent" v-for="item in commentData.slice().reverse()" >
+    <div
+      class="commentSizeContent"
+      v-for="(item,index) in commentData.slice().reverse()"
+      v-show="item.show"
+    >
       <div class="cImage">
         <img src="@/assets/img/lisa.jpg" alt="" />
         <span class="user">{{ item.username }}</span>
-        <span class="time">{{ getTime(item) }}</span>
+        <span class="time"
+          >{{ getTime(item) }}
+          <span
+            class="del"
+            v-show="item.delShow"
+            @click="toDelComment(item.createtime,index)"
+            >删除</span
+          ></span
+        >
       </div>
       <div class="triangle"></div>
       <span class="ctext">
@@ -25,17 +38,19 @@
 
 <script>
 import { formatDate } from "utils";
-import { postBlogComment } from 'network/detail'
+import { postBlogComment } from "network/detail";
+import { delComment } from "network/delComment";
 
 export default {
   name: "commentSize",
-  data(){
-    return{
-      postCommentData:{
-        content:''
+  data() {
+    return {
+      postCommentData: {
+        content: "",
       },
-      isComment:0,
-    }
+      isComment: 0,
+      // delShow:false,
+    };
   },
   props: {
     commentData: {
@@ -45,24 +60,47 @@ export default {
       },
     },
   },
-  methods:{
-    getTime(item){
-      return formatDate(new Date(item.createtime),"yyyy-MM-dd, hh:mm");
-    },
-    commentPostClick(){
-      // console.log(this.postCommentData);
-      postBlogComment(this.$route.params.id,this.postCommentData).then(data=>{
-        // this.isComment = Number(data)
-        // console.log(data);
-        if(data){
-          this.$set(this.commentData,this.commentData.length,data.data[this.commentData.length])
-          // console.log(data);
+  methods: {
+    toDelComment(createtime,index) {
+      delComment(this.$route.params.id, createtime).then((data) => {
+        if (data.error !== -1) {
+          this.$set(this.commentData[this.commentData.length - index -1],
+          'show',
+          false
+          )
+          this.$forceUpdate()
+          // this.commentData = data
+          this.$store.dispatch("changeTips",'删除成功');
         }
-      })
+      });
+    },
+    getTime(item) {
+      return formatDate(new Date(item.createtime), "yyyy-MM-dd, hh:mm");
+    },
+    commentPostClick() {
+      // console.log(this.postCommentData);
+      postBlogComment(this.$route.params.id, this.postCommentData).then(
+        (data) => {
+          // this.isComment = Number(data)
+          // console.log(data);
+          if (data) {
+            
+            data.data[this.commentData.length].show = true;
+            data.data[this.commentData.length].delShow = true;
+            this.$set(
+              this.commentData,
+              this.commentData.length,
+              data.data[this.commentData.length]
+            );
+            // this.$set(this.commentData,this.commentData.length,data.data[this.commentData.length])
+            // console.log(data);
+            // console.log(this.commentData);
+          }
+        }
+      );
     },
   },
-  created(){
-  }
+  created() {},
 };
 </script>
 
@@ -79,7 +117,8 @@ export default {
   padding: 25px 0;
   border-top: 7px solid black;
 }
-.comment > h2,.comment > i{
+.comment > h2,
+.comment > i {
   color: #fff;
 }
 .comment textarea {
@@ -111,8 +150,8 @@ export default {
 .user {
   font-size: 20px;
   color: rgb(22, 172, 218);
-} 
-.time{
+}
+.time {
   font-size: 15px;
 }
 .triangle {
@@ -141,15 +180,20 @@ export default {
   display: block;
   background-color: rgb(207, 205, 205);
 }
-.btn{
+.btn {
   height: 35px;
   width: 130px;
   border-radius: 12px;
   cursor: pointer;
 }
-.btn:hover{
+.btn:hover {
   background-color: #333;
   color: #fff;
-  transition:all .5s;
+  transition: all 0.5s;
+}
+.del {
+  margin-left: 5px;
+  color: rgb(255, 71, 71);
+  cursor: pointer;
 }
 </style>

@@ -38,6 +38,9 @@ export default {
     CommentSize,
   },
   methods:{
+    refreshComment(data){
+      this.commentData = data
+    },
     btnClick(event){
       if(event.target.localName === 'button'){
         // console.log(123);
@@ -48,9 +51,20 @@ export default {
   },
   created() {
     getBlogComment(this.$route.params.id).then(data=>{
-      // console.log(data);
       this.commentData = data.data
-      
+      // console.log(this.commentData);
+      this.commentData.forEach(e => {
+        e.show = true
+        console.log(e.username);
+        if(e.username === this.$store.state.username){
+          e.delShow = true
+        }else if(this.$store.state.username === 'Satoi'){
+          e.delShow = true
+        }else{
+          e.delShow = false
+        }
+      });
+      // if(data.data)
     })
     getBlogDetail(this.$route.params.id)
       .then((result) => {

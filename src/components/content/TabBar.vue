@@ -13,7 +13,10 @@
         <a href="javascript:;">关于我</a>
       </div>
       <div class="tRight" v-if="this.$store.getters.showLogin">
-        <a href="javascript:;" class="user">{{this.$store.getters.getusername}}</a>
+        <a href="javascript:;" class="user" @mouseover="showsignout" @mouseout="showsignout">{{this.$store.getters.getusername}}
+          <a href="javascript:;" v-show="issignout" @click="signout" class="signout">退出登录</a>
+        </a>
+        
         <a href="javascript:;" class="info">个人信息</a>
         <a href="javascript:;" v-show="getBackstage" class="backstage">后台</a>
       </div>
@@ -27,11 +30,13 @@
 
 <script>
 import { getIsLogin } from "network/home";
+import { logout } from "network/logout";
 
 export default {
   name: "TabBar",
   data() {
     return {
+      issignout:false,
     };
   },
   computed:{
@@ -40,6 +45,13 @@ export default {
     }
   },
   methods: {
+    showsignout(){
+      this.issignout = !this.issignout
+    },
+    signout(){
+      logout()
+      this.$store.dispatch('isChangLogin',{username:'',showLogin:false})
+    },
     tabClick(e){
       if(e.target.className === 'blogName' || e.target.className === 'homepage'){
         this.$router.push('/home').catch(err => err)
@@ -110,6 +122,18 @@ export default {
   display: flex;
   justify-content: flex-start;
   flex-shrink: 0;
+}
+.user{
+  position: relative;
+}
+.signout{
+  position: absolute;
+  /* background-color: inherit; */
+  width: inherit;
+  top: 58px;
+  left: -23px;
+  z-index: 99;
+  text-align: center;
 }
 .tRight a{
   text-decoration: none;

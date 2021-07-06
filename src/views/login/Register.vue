@@ -111,6 +111,9 @@ export default {
   flex-direction: column;
   align-items: center;
 }
+.register input{
+  color: #000;
+}
 .title,
 .wrap {
   position: absolute;

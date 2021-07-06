@@ -170,8 +170,9 @@ export default {
       // console.log(s1, ",", s2);
       this.tempData.title = s1.slice(0, s1.indexOf("\n"));
       this.tempData.contentText = s1.slice(s1.indexOf("\n") + 1);
-      this.tempData.contentHtml = s2.slice(s2.indexOf("</p>") + 4);
+      this.tempData.contentHtml = s2.slice(s2.indexOf("<br />") + 6);
       this.tempData.image = this.tempData.image[0]
+      console.log(this.tempData);
       this.$store.dispatch(
         "changeShowSelect",
         `确定更新标题id为${this.tempId}的博客吗？`
