@@ -39,8 +39,9 @@ export default {
   },
   methods: {
     getContent(item) {
+      console.log(item)
       return item.contentHtml.replace(/<[^>]+>|&[^>]+;/g, "").trim()
-      .split(' ',20)[0]+'...'; //去掉所有的html标签和&nbsp;之类的特殊符合
+      // .split(' ',20)[0]+'...'; //去掉所有的html标签和&nbsp;之类的特殊符合
     },
     imgLoad() {
       waterFallLayout(this)

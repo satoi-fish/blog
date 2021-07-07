@@ -193,9 +193,10 @@ export default {
       this.$bus.$off("selected");
       this.tempData.title = s1.slice(0, s1.indexOf("\n"));
       this.tempData.contentText = s1.slice(s1.indexOf("\n") + 1);
-      this.tempData.contentHtml = "<p>" + s2.slice(s2.indexOf("<br />") + 6);
+      this.tempData.contentHtml = s2.slice(s2.indexOf("<br />") + 6);
       this.tempData.image = this.tempData.image[0]
-      console.log(this.tempData.image);
+      // console.log(this.tempData.image);
+      console.log(s1, ",", s2);
       this.$store.dispatch(
         "changeShowSelect",
         `确定新建标题为${this.tempData.title}的博客吗？`

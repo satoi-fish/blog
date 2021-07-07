@@ -22,7 +22,7 @@
       </div>
       <div class="tRight" v-else="this.$store.getters.showLogin">
         <a href="javascript:;" class="login">登录</a>
-        <a href="javascript:;" class="registration" >注册</a>
+        <a href="javascript:;" class="registration">注册</a>
       </div>
     </div>
   </div>
@@ -50,7 +50,9 @@ export default {
     },
     signout(){
       logout()
+      this.issignout = false
       this.$store.dispatch('isChangLogin',{username:'',showLogin:false})
+      this.$router.push('/home').catch(err=> console.log(err))
     },
     tabClick(e){
       if(e.target.className === 'blogName' || e.target.className === 'homepage'){
