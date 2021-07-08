@@ -16,7 +16,7 @@
       v-show="item.show"
     >
       <div class="cImage">
-        <img src="@/assets/img/lisa.jpg" alt="" />
+        <img :src="item.img" alt="" />
         <span class="user">{{ item.username }}</span>
         <span class="time"
           >{{ getTime(item) }}
@@ -48,7 +48,7 @@ export default {
       postCommentData: {
         content: "",
       },
-      isComment: 0,
+      // isComment: 0,
       // delShow:false,
     };
   },
@@ -100,7 +100,6 @@ export default {
       );
     },
   },
-  created() {},
 };
 </script>
 

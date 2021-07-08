@@ -43,8 +43,8 @@
           @save="saveUpdate"
         />
       </article>
-      <div class="listbox delbox" v-show="delShow" @click="delClick">
-        <div class="list" v-for="item2 in data2">
+      <div class="listbox delbox" v-show="delShow">
+        <div class="list" v-for="(item2,index) in data2" @click="delClick(item2,index)">
           <div class="id">{{ item2.id }}</div>
           <div class="title">{{ item2.title }}</div>
           <div class="content">{{ item2.content }}</div>
@@ -140,23 +140,26 @@ export default {
         });
       }
     },
-    async delClick(e) {
+    async delClick(item,index) {
       this.$bus.$off("selected");
-      this.tempId = Number(e.toElement.parentNode.firstChild.innerText);
-      if (this.tempId !== NaN && this.delShow === true) {
-        // console.log(this.tempId);
+      // console.log(index);
+      // console.log(this.data2);
+      
+      // console.log(this.tempId);
+      if (item.id !== NaN && this.delShow === true) {
         this.$store.dispatch(
           "changeShowSelect",
-          `确定删除标题id为${this.tempId}的博客吗？`
+          `确定删除标题id为${item.id}的博客吗？`
         );
         await this.$bus.$on("selected", (d) => {
           // console.log(d);
           if (d) {
             // this.$store.dispatch("changeTips", "删除成功");
-            delBlog(this.tempId).then((result) => {
+            delBlog(item.id).then((result) => {
               // console.log(result);
               if (!result.error) {
                 this.$store.dispatch("changeTips", "删除成功");
+                this.data2.splice(index,1)
               } else {
                 this.$store.dispatch("changeTips", "删除失败");
               }

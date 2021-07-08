@@ -52,10 +52,10 @@ export default {
   created() {
     getBlogComment(this.$route.params.id).then(data=>{
       this.commentData = data.data
-      // console.log(this.commentData);
+      console.log(this.commentData);
       this.commentData.forEach(e => {
         e.show = true
-        console.log(e.username);
+        // console.log(e.username);
         if(e.username === this.$store.state.username){
           e.delShow = true
         }else if(this.$store.state.username === 'Satoi'){
