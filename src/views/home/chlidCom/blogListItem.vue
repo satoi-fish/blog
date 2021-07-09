@@ -7,7 +7,7 @@
       @click="imgClick(item)">
       <img :src="item.image" alt="" @load="imgLoad"/>
       <h1 class="title">{{ item.title }}</h1>
-      <span>{{ getContent(item) }}</span>
+      <span v-text="getContent(item)"></span>
     </div>
   </div>
 </template>
@@ -40,7 +40,7 @@ export default {
   methods: {
     getContent(item) {
       // console.log(item)
-      return item.contentHtml.replace(/<[^>]+>|&[^>]+;/g, "").trim()
+      return item.contentHtml.replace(/<\/?.+?>/g, "").trim()
       // .split(' ',20)[0]+'...'; //去掉所有的html标签和&nbsp;之类的特殊符合
     },
     imgLoad() {

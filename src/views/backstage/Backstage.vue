@@ -21,6 +21,12 @@
             <span>拖动图片到此处</span>
           </div>
         </Upload>
+        <div class="titlebox">
+          <div  class="new-text-title">
+            <span>标题</span>
+          </div>
+          <input type="text" class="newtitle" v-model="title">
+        </div>
         <mavonEditor
           ref="me"
           class="mavon-editor"
@@ -37,6 +43,12 @@
         </div>
       </div>
       <article class="detail" v-show="showDetail">
+      <div class="titlebox">
+          <div  class="ud-text-title">
+            <span>标题</span>
+          </div>
+          <input type="text" class="newtitle" v-model="title">
+      </div>
         <mavonEditor
           class="mavon-editor"
           v-model="content"
@@ -80,6 +92,7 @@ export default {
       showNew: false,
       tempId: -1,
       tempData: {},
+      title:'',
     };
   },
   components: {
@@ -132,11 +145,11 @@ export default {
       this.tempId = Number(e.toElement.parentNode.firstChild.innerText);
       if (this.tempId !== NaN && this.udShow === true && this.content === "") {
         getBlogDetail(this.tempId).then((data) => {
-          console.log(data);
+          // console.log(data);
           this.showDetail = true;
           this.udShow = false;
-          this.content =
-            data.data[0].title + "\n" + data.data[0].contentText;
+          this.title = data.data[0].title
+          this.content = data.data[0].contentText;
         });
       }
     },
@@ -171,9 +184,9 @@ export default {
     async saveUpdate(s1, s2) {
       this.$bus.$off("selected");
       // console.log(s1, ",", s2);
-      this.tempData.title = s1.slice(0, s1.indexOf("\n"));
-      this.tempData.contentText = s1.slice(s1.indexOf("\n") + 1);
-      this.tempData.contentHtml = s2.slice(s2.indexOf("<br />") + 6);
+      this.tempData.title = this.title
+      this.tempData.contentText = s1
+      this.tempData.contentHtml = s2
       this.tempData.image = this.tempData.image[0]
       console.log(this.tempData);
       this.$store.dispatch(
@@ -194,9 +207,9 @@ export default {
     },
     async saveNew(s1, s2) {
       this.$bus.$off("selected");
-      this.tempData.title = s1.slice(0, s1.indexOf("\n"));
-      this.tempData.contentText = s1.slice(s1.indexOf("\n") + 1);
-      this.tempData.contentHtml = s2.slice(s2.indexOf("<br />") + 6);
+      this.tempData.title = this.title
+      this.tempData.contentText = s1
+      this.tempData.contentHtml = s2
       this.tempData.image = this.tempData.image[0]
       // console.log(this.tempData.image);
       console.log(s1, ",", s2);
@@ -379,6 +392,28 @@ export default {
   position: absolute;
   top: -35px;
   left: 12.2vw;
+}
+.titlebox{
+  margin-top: 30px;
+  margin-left: 5px;
+  text-align: center;
+}
+.new-text-title{
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #222;
+}
+.newtitle{
+  color: #222;
+  height: 25px;
+  width: 300px;
+  border: 0px;
+  border-radius: 6px;
+}
+.ud-text-title{
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #ddd;
 }
 @keyframes goheight {
   from {
