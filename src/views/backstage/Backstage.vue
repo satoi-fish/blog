@@ -36,7 +36,14 @@
         />
       </div>
       <div class="listbox updatebox" v-show="udShow">
-        <div class="list" v-for="item1 in data1" @click="udClick">
+        <div class="pageBox">
+          <span>页数：{{currentPage}}</span>
+          <input class="pageInput" type="text" v-model.lazy="currentPage" placeholder="请输入页数">
+          <input class="confirmBtn" type="button" @click="changePage" @keydown.enter="changePage" value="确定"> 
+          <span @click="prevPage" class="prevPage">上一页</span>
+          <span @click="nextPage" class="nextPage">下一页</span>
+        </div>
+        <div class="list" v-for="item1 in data1.slice((this.currentPage-1)* 13, this.currentPage * 13)" @click="udClick">
           <div class="id">{{ item1.id }}</div>
           <div class="title">{{ item1.title }}</div>
           <div class="content">{{ item1.content }}</div>
@@ -56,7 +63,14 @@
         />
       </article>
       <div class="listbox delbox" v-show="delShow">
-        <div class="list" v-for="(item2,index) in data2" @click="delClick(item2,index)">
+        <div class="pageBox">
+          <span>页数：{{currentPage}}</span>
+          <input class="pageInput" type="text" v-model.lazy="currentPage">
+          <input class="confirmBtn" type="button" @click="changePage" @keydown.enter="changePage" value="确定"> 
+          <span @click="prevPage" class="prevPage">上一页</span>
+          <span @click="nextPage" class="nextPage">下一页</span>
+        </div>
+        <div class="list" v-for="(item2,index) in data2.slice((this.currentPage-1)* 13, this.currentPage * 13)" @click="delClick(item2,index)">
           <div class="id">{{ item2.id }}</div>
           <div class="title">{{ item2.title }}</div>
           <div class="content">{{ item2.content }}</div>
@@ -93,6 +107,9 @@ export default {
       tempId: -1,
       tempData: {},
       title:'',
+      currentPage:1,
+      totalPages:0,
+      plusone:0,
     };
   },
   components: {
@@ -110,10 +127,10 @@ export default {
         this.showDetail = false;
         this.showNew = true;
         this.content = "";
-        getBlogList().then((data) => {
-          this.data1 = data.data;
-          this.data2 = data.data;
-        });
+        // getBlogList().then((data) => {
+        //   this.data1 = data.data;
+        //   this.data2 = data.data;
+        // });
         return;
       }
       if (e.target.innerText === "更新") {
@@ -122,10 +139,10 @@ export default {
         this.showDetail = false;
         this.showNew = false;
         this.content = "";
-        getBlogList().then((data) => {
-          this.data1 = data.data;
-          this.data2 = data.data;
-        });
+        // getBlogList().then((data) => {
+        //   this.data1 = data.data;
+        //   this.data2 = data.data;
+        // });
         return;
       }
       if (e.target.innerText === "删除") {
@@ -134,10 +151,10 @@ export default {
         this.showDetail = false;
         this.showNew = false;
         this.content = "";
-        getBlogList().then((data) => {
-          this.data1 = data.data;
-          this.data2 = data.data;
-        });
+        // getBlogList().then((data) => {
+        //   this.data1 = data.data;
+        //   this.data2 = data.data;
+        // });
         return;
       }
     },
@@ -247,11 +264,33 @@ export default {
         console.log('error on upload image');
       }
     },
+    changePage(){
+      // this.currentPage = 
+    },
+    prevPage(){
+      if(this.currentPage !== 1){
+        this.currentPage--
+      }else{
+        return
+      }
+    },
+    nextPage(){
+      // console.log(this.totalPages);
+      if(this.currentPage < (this.totalPages * 1 + this.plusone)){
+        this.currentPage++
+      }else{
+        return
+      }
+    },
   },
   created() {
     // console.log(this.tempId);
     this.tempData.image = []
     getBlogList().then((data) => {
+      this.totalPages = (data.data.length / 13).toFixed()
+      if(data.data.length % 13 !== 0){
+        this.plusone = 1
+      }
       this.data1 = data.data;
       this.data2 = data.data;
     });
@@ -323,9 +362,50 @@ export default {
   right: 12.2vw;
   top: -35px;
 }
+.pageBox{
+  height: 30px;
+  line-height: 30px;
+}
+.pageInput{
+  width: 50px;
+  text-align: center;
+  margin-left: 20px;
+  /* padding-left: 10px; */
+  border: 0px;
+  border-radius: 10px;
+  height: 20px;
+  line-height: 20px;
+  outline: none;
+}
+.confirmBtn{
+  margin-left: 20px;
+  border-radius: 10px;
+  border: 3px;
+  height: 25px;
+  width: 60px;
+  cursor: pointer;
+}
+.confirmBtn:hover{
+  color: #fff;
+  background-color: rgba(66, 66, 66,.6);
+}
+.prevPage{
+  color: #000;
+  margin-left: 20px;
+  cursor: pointer;
+}
+.nextPage{
+  color: #000;
+  margin-left: 20px;
+  cursor: pointer;
+}
 .list {
   display: flex;
   width: 100%;
+  height: 30px;
+  line-height: 30px;
+  border-radius:10px;
+  margin-top: 10px;
   /* justify-content: space-around; */
   cursor: pointer;
   background-color: #fff;
@@ -336,16 +416,17 @@ export default {
   transition:all .2s;
 }
 .list>div{
-  border-right: 2px solid #444;
   text-align: center;
 }
 .id {
-  border-left: 2px solid #444;
+  border-right: 2px solid rgb(66, 66, 66,0.3);
+  /* border-left: 2px solid #444; */
   min-width: 50px;
   flex : 0;
 }
 .title {
   flex: 1;
+  border-right: 2px solid rgb(66, 66, 66,0.3);
 }
 .content {
   flex: 3;
