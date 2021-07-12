@@ -1,8 +1,9 @@
 import {request} from './request';
 
-export function getBlogList(){
+export function getBlogList(keyword){
+  keyword = keyword || ""
   return request({
-    url:'/blog/list'
+    url:`/blog/list?keyword=${keyword}`
   })
 }
 
